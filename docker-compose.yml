@@ -1,0 +1,98 @@
+version: "3.9"
+services:
+  go-shadow-client:
+    profiles: 
+      - "client"
+    build:
+      context: build
+      dockerfile: Dockerfile
+    image: registry.hime.local/go-shadow:${VERSION}
+    environment:
+      - SS=${SS}
+      - SOCKS_PORT=${SOCKS_PORT}
+    ports:
+      - "${SOCKS_PORT}:${SOCKS_PORT}/udp"
+      - "${SOCKS_PORT}:${SOCKS_PORT}/tcp"
+    command: 
+      - "sh" 
+      - "-c"
+      - '/opt/go-shadowsocks2 -c "$${SS}" -verbose -socks :"$${SOCKS_PORT}" -u -udptun :8053=8.8.8.8:53,:8054=8.8.4.4:53 -tcptun :8053=8.8.8.8:53,:8054=8.8.4.4:53'
+
+  go-shadow-client-v2ray:
+    profiles: 
+      - "client-v2ray"
+    build:
+      context: build
+      dockerfile: Dockerfile
+    image: registry.hime.local/go-shadow:${VERSION}
+    environment:
+      - SS=${SS}
+      - SOCKS_PORT=${SOCKS_PORT}
+      - PLUGIN_NAME=${PLUGIN_NAME}
+      - PLUGIN_OPTS=${PLUGIN_OPTS}
+    ports:
+      - "${SOCKS_PORT}:${SOCKS_PORT}/udp"
+      - "${SOCKS_PORT}:${SOCKS_PORT}/tcp"
+    command: 
+      - "sh" 
+      - "-c"
+      - '/opt/go-shadowsocks2 -c "$${SS}" -verbose -socks :"$${SOCKS_PORT}" -plugin "$${PLUGIN_NAME}" -plugin-opts "$${PLUGIN_OPTS}" -u'
+
+  go-shadow-tunnel:
+    profiles: 
+      - "tunnel"
+    build:
+      context: build
+      dockerfile: Dockerfile
+    image: registry.hime.local/go-shadow:${VERSION}
+    environment:
+      - SS=${SS}
+      - SOCKS_PORT=${SOCKS_PORT}
+      - REMOTE_HOST=${REMOTE_HOST}
+      - REMOTE_PORT=${REMOTE_PORT}
+    ports:
+      - "${SOCKS_PORT}:${SOCKS_PORT}/udp"
+      - "${SOCKS_PORT}:${SOCKS_PORT}/tcp"
+      - "${LOCAL_PORT}:${REMOTE_PORT}/udp"
+      - "${LOCAL_PORT}:${REMOTE_PORT}/tcp"
+      - "52820:51820/udp"   # it's sample for manual port rediorect
+    command: 
+      - "sh" 
+      - "-c"
+      - '/opt/go-shadowsocks2 -c "$${SS}" -verbose -socks :$${SOCKS_PORT} -u -udptun :$${LOCAL_PORT}=$${REMOTE_HOST}:$${REMOTE_PORT},:52820=$${REMOTE_HOST}:51820'
+  
+  go-shadow-redir:
+    profiles: 
+      - "redir"
+    build:
+      context: build
+      dockerfile: Dockerfile
+    image: registry.hime.local/go-shadow:${VERSION}
+    cap_add:
+      - "NET_ADMIN"
+      - "NET_BIND_SERVICE"
+    environment:
+      - SS=${SS}
+      - SHADOW_SERVER=${SHADOW_SERVER}
+      - SOCKS_PORT=${SOCKS_PORT}
+      - IP4_REDIR_PORT=${IP4_REDIR_PORT}
+      - IP6_REDIR_PORT=${IP6_REDIR_PORT}
+    ports:
+      - "${SOCKS_PORT}:${SOCKS_PORT}/udp"
+      - "${SOCKS_PORT}:${SOCKS_PORT}/tcp"
+    command: 
+      - /entrypoint.sh
+  
+  test:
+    profiles: 
+      - "test"
+    build:
+      context: build
+      dockerfile: Dockerfile
+    image: registry.hime.local/go-shadow:${VERSION}
+    environment:
+      - SS=${SS}
+    command: 
+      - "sh"
+      - "-c"
+      - 'echo "$${SS}"'
