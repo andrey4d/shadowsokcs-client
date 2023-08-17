@@ -16,13 +16,8 @@ FROM alpine:3.18
 LABEL maintainer="andrey4d.dev@gmail.ru"
 LABEL app="go-shadowsocks2"
 
-ENV SERVER 0.0.0.0
-ENV SERVER_PORT 9000
+
 ENV SOCKS_PORT 1080
-ENV LOCAL_ADDR 0.0.0.0
-ENV PASSWORD default
-ENV CIPHER chacha20-ietf-poly1305
-ENV TIMEOUT 300
 ENV SS "ss://"
 
 RUN apk add -U --no-cache curl iptables
