@@ -6,7 +6,7 @@ services:
     build:
       context: build
       dockerfile: Dockerfile
-    image: registry.hime.local/go-shadow:${VERSION}
+    image: registry.home.local/go-shadow:${VERSION}
     environment:
       - SS=${SS}
       - SOCKS_PORT=${SOCKS_PORT}
@@ -24,7 +24,7 @@ services:
     build:
       context: build
       dockerfile: Dockerfile
-    image: registry.hime.local/go-shadow:${VERSION}
+    image: registry.home.local/go-shadow:${VERSION}
     environment:
       - SS=${SS}
       - SOCKS_PORT=${SOCKS_PORT}
@@ -44,7 +44,7 @@ services:
     build:
       context: build
       dockerfile: Dockerfile
-    image: registry.hime.local/go-shadow:${VERSION}
+    image: registry.home.local/go-shadow:${VERSION}
     environment:
       - SS=${SS}
       - SOCKS_PORT=${SOCKS_PORT}
@@ -67,7 +67,7 @@ services:
     build:
       context: build
       dockerfile: Dockerfile
-    image: registry.hime.local/go-shadow:${VERSION}
+    image: registry.home.local/go-shadow:${VERSION}
     cap_add:
       - "NET_ADMIN"
       - "NET_BIND_SERVICE"
@@ -89,7 +89,7 @@ services:
     build:
       context: build
       dockerfile: Dockerfile
-    image: registry.hime.local/go-shadow:${VERSION}
+    image: registry.home.local/go-shadow:${VERSION}
     environment:
       - SS=${SS}
     command: 
