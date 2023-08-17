@@ -83,16 +83,3 @@ services:
     command: 
       - /entrypoint.sh
   
-  test:
-    profiles: 
-      - "test"
-    build:
-      context: build
-      dockerfile: Dockerfile
-    image: registry.home.local/go-shadow:${VERSION}
-    environment:
-      - SS=${SS}
-    command: 
-      - "sh"
-      - "-c"
-      - 'echo "$${SS}"'
