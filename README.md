@@ -6,6 +6,18 @@ https://github.com/shadowsocks/go-shadowsocks2/tree/master
 ```shell
 docker-compose --profile client build
 ```
+Multi ARCH build
+```shell
+docker buildx create --name second_builder --use --bootstrap
+docker buildx build --push -t registry.home.local/registry.hime.local/go-shadow:v0.0.1  --platform linux/amd64,linux/arm64 ./build 
+docker buildx rm second_builder 
+```
+OR
+```shell
+docker build  --platform linux/arm64 -t registry.home.local/go-shadow:v0.0.1-arm64 build
+docker build  --platform linux/amd64 -t registry.home.local/go-shadow:v0.0.1-amd64 build
+docker manifest create registry.home.local/go-shadow:v0.0.1 --amend registry.home.local/go-shadow:v0.0.1-arm64  --amend registry. home.local/go-shadow:v0.0.1-amd64
+```
 ### RUN
 #### Edit .env 
 Copy .env.sample to .env and edit it
